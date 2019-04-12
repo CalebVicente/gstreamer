@@ -1,8 +1,0 @@
-#devel -> develop
-dnf install gstreamer1-plugins-ugly-free gstreamermm-devel  gstreamer
-
-#pkconfig buscaba  gststreamer-1.0.pc y en fedora se llama gstremaer
-#En / /lib64/pkgconfig/ existía el archivo gstreamer-1.0.pc y el comando de las prácticas te decía que buscaba gststreamer-1.0.pc
-
-Para solucionarlo, llama a pkconfig con:
-gcc -Wall oggplayer.c -o patata  $(pkg-config --cflags --libs gstreamer-1.0)
