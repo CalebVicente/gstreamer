@@ -1,0 +1,10 @@
+PASO3 (Reproductor de video)
+//En la creación de los elementos:
+  /* Create gstreamer elements */
+  //gst_element_factory_make ("factoria", "nombre"NULL);//he puesto null, porque si ponia un nombre me daba error
+  pipeline = gst_pipeline_new ("audio-player");
+  source   = gst_element_factory_make ("filesrc",       "file-source");
+  demuxer  = gst_element_factory_make ("oggdemux",      "ogg-demuxer");
+  decoder  = gst_element_factory_make ("theoradec",     NULL);
+  conv     = gst_element_factory_make ("videoconvert",  NULL);
+  sink     = gst_element_factory_make ("autovideosink", NULL);

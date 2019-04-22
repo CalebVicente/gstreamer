@@ -1,0 +1,42 @@
+				PRACTICA1
+PASO3
+//Reproductor de audio mp3
+gst-launch-1.0 filesrc location=audio_prueba.mp3 ! id3demux ! decodebin ! alsasink
+//Reproductor de audio ogg
+gst-launch filesrc location="trailer_400p.ogg" ! oggdemux ! vorbisdec ! audioconvert ! audioresample ! alsasink
+(Funciona tanto con alsasink como con audiosink)
+
+PASO4
+//Reproductor de audio ogg directamente de la red(no me funciona)
+gst-launch souphttpsrc location="http://www.bigbuckbunny.org/index.php/trailer-page/" ! oggdemux ! vorbisdec ! audioconvert ! audioresample ! autoaudiosink
+//Reproducir el video
+gst-launch-1.0 filesrc location="trailer_400p.ogg" ! oggdemux ! theoradec ! videoconvert ! ximagesink
+(atento, que si hay que poner ximgagesink o pones el videoconvert o no funciona, con autovideosink funciona sin el convert)
+
+PASO5//para añadir efectos effectv
+
+//Añadir un texto a un video
+gst-launch-1.0 filesrc location="trailer_400p.ogg" ! oggdemux ! theoradec ! videoconvert ! textoverlay text="Title : Hello" ! ximagesink
+(El textoverlay se puede poner tanto delante como detras del videoconvert)
+
+//Girar el video
+gst-launch-1.0 filesrc location="trailer_400p.ogg" ! oggdemux ! theoradec ! timeoverlay ! videoflip method=clockwise ! videoconvert ! ximagesink
+
+PASO 6 //DESCOMPONER EN DOS FLUJOS
+gst-launch filesrc location="trailer_400p.ogg" ! oggdemux name="demux" 
+demux. ! queue ! vorbisdec ! audioconvert ! autoaudiosink 
+demux. ! queue ! theoradec ! timeoverlay ! videoflip method=clockwise ! autovideosink
+
+PASO 7 //GUARDAR EN FICHERO
+ggst-launch-1.0 filesrc location=audio_prueba.mp3 ! id3demux ! decodebin ! filesink location="hola.mp3"
+
+PASO 8 COMBINACION DE SEÑALES, FLUJO MULTIMEDIA
+ gst-launch-1.0 filesrc location="trailer_400p.ogg" ! theoraenc \  queue ! oggmux name="muxer" filesrc location="audio_prueba.mp3" ! vorbisenc ! queue ! muxer. muxer. ! filesink location="combinacion.ogg"
+
+
+
+
+
+
+
+

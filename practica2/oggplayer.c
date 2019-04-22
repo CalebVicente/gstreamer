@@ -1,12 +1,13 @@
 #include <gst/gst.h>
 #include <glib.h>
 
-
+/*QUE HACE ESTO DEL GBOOLEAN BUS_CALL*/
 static gboolean
 bus_call (GstBus     *bus,
           GstMessage *msg,
           gpointer    data)
 {
+  //no entiendo
   GMainLoop *loop = (GMainLoop *) data;
 
   switch (GST_MESSAGE_TYPE (msg)) {
@@ -71,7 +72,7 @@ main (int   argc,
 
   loop = g_main_loop_new (NULL, FALSE);
 
-
+  /*EN C EL PROPIO NOMBRE DEL PROGRAMA SE PASA COMO ARGUMENTO*/
   /* Check input arguments */
   if (argc != 2) {
     g_printerr ("Usage: %s <Ogg/Vorbis filename>\n", argv[0]);
@@ -83,9 +84,9 @@ main (int   argc,
   pipeline = gst_pipeline_new ("audio-player");
   source   = gst_element_factory_make ("filesrc",       "file-source");
   demuxer  = gst_element_factory_make ("oggdemux",      "ogg-demuxer");
-  decoder  = gst_element_factory_make ("vorbisdec",     "vorbis-decoder");
-  conv     = gst_element_factory_make ("audioconvert",  "converter");
-  sink     = gst_element_factory_make ("autoaudiosink", "audio-output");
+  decoder  = gst_element_factory_make ("theoradec",     NULL);
+  conv     = gst_element_factory_make ("videoconvert",  NULL);
+  sink     = gst_element_factory_make ("autovideosink", NULL);
 
   if (!pipeline || !source || !demuxer || !decoder || !conv || !sink) {
     g_printerr ("One element could not be created. Exiting.\n");
