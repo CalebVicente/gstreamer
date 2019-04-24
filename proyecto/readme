@@ -1,4 +1,15 @@
 Para el proyecto:
+
+gst-launch-1.0 filesrc location="trailer_400p.ogg" ! decodebin name=dmux \
+? dmux. ! queue ! audioconvert ! autoaudiosink \
+? dmux. ! queue ! autovideoconvert ! autovideosink
+
+gst-launch-1.0 -m filesrc location="trailer_400p.ogg" ! decodebin name=dmux dmux. ! queue! bpmdetect ! autoaudiosink dmux. ! queue ! autovideosink
+
+
+
+
+
 git clone https://github.com/uc3m-aplicacones-multimedia-2019/grup.git
 
 git confi --glocal user.name "Tu nombre"
