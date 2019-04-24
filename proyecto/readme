@@ -1,0 +1,8 @@
+Para el proyecto:
+git clone https://github.com/uc3m-aplicacones-multimedia-2019/grup.git
+
+git confi --glocal user.name "Tu nombre"
+
+
+""""""""" user.email "NIA@alumnos.uc3m.es"
+
