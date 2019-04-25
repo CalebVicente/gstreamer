@@ -63,7 +63,7 @@ main (int   argc,
 {
   GMainLoop *loop;
 
-  GstElement *pipeline, *source, *demuxer, *decoder, *conv, *sink;
+  GstElement *pipeline, *source, *decoder, *conv, *sink;
   GstBus *bus;
 
   /* Initialisation */
@@ -82,12 +82,12 @@ main (int   argc,
   /* Create gstreamer elements */
   pipeline = gst_pipeline_new ("audio-player");
   source   = gst_element_factory_make ("filesrc",       "file-source");
-  demuxer  = gst_element_factory_make ("id3demux",      NULL);
-  decoder  = gst_element_factory_make ("decodebin",     NULL);
-  conv     = gst_element_factory_make ("audioconvert",  NULL);
-  sink     = gst_element_factory_make ("alsasink", NULL);
+  //demuxer  = gst_element_factory_make ("id3demux",      NULL);
+  decoder  = gst_element_factory_make ("decodebin",     "decodificador");
+  conv     = gst_element_factory_make ("audioconvert",  "convertidor");
+  sink     = gst_element_factory_make ("alsasink", "sumidero");
 
-  if (!pipeline || !source || !demuxer || !decoder || !conv || !sink) {
+  if (!pipeline || !source || !decoder || !conv || !sink) {
     g_printerr ("One element could not be created. Exiting.\n");
     return -1;
   }
@@ -105,12 +105,12 @@ main (int   argc,
   /* we add all elements into the pipeline */
   /* file-source | ogg-demuxer | vorbis-decoder | converter | alsa-output */
   gst_bin_add_many (GST_BIN (pipeline),
-                    source, demuxer, decoder, conv, sink, NULL);
+                    source, decoder, conv, sink, NULL);
 
   /* we link the elements together */
   /* file-source -> ogg-demuxer ~> vorbis-decoder -> converter -> alsa-output */
   //gst_element_link (source, demuxer);
-  gst_element_link_many (source, demuxer, decoder, conv, sink, NULL);
+  gst_element_link_many (source, decoder, conv, sink, NULL);
   //g_signal_connect (demuxer, "pad-added", G_CALLBACK (on_pad_added), decoder);
 
   /* note that the demuxer will be linked to the decoder dynamically.
