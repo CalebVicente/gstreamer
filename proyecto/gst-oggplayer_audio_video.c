@@ -38,8 +38,9 @@ bus_call (GstBus     *bus,
 {
   GMainLoop *loop = (GMainLoop *) data;
   char *src = GST_MESSAGE_SRC_NAME(msg);
+  
   switch (GST_MESSAGE_TYPE (msg)) {
-	
+
   case GST_MESSAGE_EOS:
     g_print ("..[bus].. (%s) :: End of stream\n", src);
     g_main_loop_quit (loop);
@@ -60,7 +61,7 @@ bus_call (GstBus     *bus,
     break;
   }
   default: {
-    g_print ("..[bus].. %15s :: %-15s\n-------> %d\n", src, GST_MESSAGE_TYPE_NAME(msg), GST_MESSAGE_TYPE(msg));
+    g_print ("..[bus].. %15s :: %-15s\n", src, GST_MESSAGE_TYPE_NAME(msg));
     break;
   }
   }
@@ -109,7 +110,6 @@ on_pad_added (GstElement *element,
 
 int main(int argc, char *argv[]) {
 
-
   GMainLoop *loop;
 
   /* Check input arguments */
@@ -134,9 +134,9 @@ int main(int argc, char *argv[]) {
 
    /* Create elements */
   GstElement *source = gst_element_factory_make("filesrc", "fuente_fichero");
-  GstElement *decode = gst_element_factory_make("decodebin", "decodificador");
+  GstElement *decode = gst_element_factory_make("decodebin", "decode");
   //GstElement *aud_dec = gst_element_factory_make("vorbisdec", "decod_vorbis");
-  GstElement *metronomo = gst_element_factory_make("bpmdetect", "metronomo");
+  //GstElement *img_dec = gst_element_factory_make("theoradec", "decod_theora");
   GstElement *f_colorspace = gst_element_factory_make("videoconvert", "transform_colorspace");
   GstElement *f_audioconv = gst_element_factory_make("audioconvert", "audio_convert");
   GstElement *aud_sink = gst_element_factory_make("alsasink", "audio-output");
@@ -148,12 +148,13 @@ int main(int argc, char *argv[]) {
 
   /* Error checking */
   if (!pipeline || !source || !decode 
-      || !queue_aud || !metronomo || !f_audioconv  || !aud_sink
-      || !queue_img || !f_colorspace || !img_sink) 
+       || !queue_aud || !f_audioconv  || !aud_sink
+       || !queue_img || !f_colorspace || !img_sink) 
     {
       g_printerr ("One element could not be created. Exiting.\n");
       return -1;   // error multimedia
     }
+
 
   /* 
    * Set up the pipeline
@@ -163,7 +164,7 @@ int main(int argc, char *argv[]) {
   g_object_set (G_OBJECT (source), "location", argv[1], NULL);
 
   /* set the name for the demuxer element */
-  g_object_set (G_OBJECT (decode), "name", "decode", NULL);
+  g_object_set (G_OBJECT (decode), "decode", "demux", NULL);
 
 
   /* Bus message handling */
@@ -174,7 +175,7 @@ int main(int argc, char *argv[]) {
   
 
   /* Add elements to pipeline */
-  gst_bin_add_many(GST_BIN(pipeline), source, decode, queue_aud, metronomo, queue_img, f_colorspace, f_audioconv, aud_sink, img_sink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), source, decode, queue_aud, queue_img, f_colorspace, f_audioconv, aud_sink, img_sink, NULL);
 
   /* Link elements */
 
@@ -187,7 +188,7 @@ int main(int argc, char *argv[]) {
 
   /* demuxer src pad is created dinamically -> needs to be linked later */
   gst_element_link (source, decode);
-  gst_element_link_many(queue_aud, metronomo, f_audioconv,  aud_sink, NULL);
+  gst_element_link_many(queue_aud, f_audioconv,  aud_sink, NULL);
   gst_element_link_many(queue_img, f_colorspace, img_sink, NULL);
 
   /* connect demuxer to the rest of the pipeline when pad is dinamycally added */
@@ -232,3 +233,4 @@ int main(int argc, char *argv[]) {
 
   return estado;
 }
+
